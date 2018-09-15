@@ -1,0 +1,2 @@
+
+typealias Action = () -> Void
