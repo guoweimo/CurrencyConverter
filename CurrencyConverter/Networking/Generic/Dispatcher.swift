@@ -1,10 +1,10 @@
 import Foundation
 
 protocol Dispatcher {
-  
+  associatedtype Data: Decodable
   init(environment: Environment)
   
-  func fetch<Result: Decodable>(request: Request, completion: @escaping (Response<Result>) -> Void) throws
+  func fetch(request: Request, completion: @escaping (Response<Data>) -> Void) throws
 }
 
 extension Dispatcher {

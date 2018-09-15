@@ -2,16 +2,6 @@
 import XCTest
 @testable import CurrencyConverter
 
-struct MockDispatcher: Dispatcher {
-  init(environment: Environment) {
-    
-  }
-  
-  func fetch<Result>(request: Request, completion: @escaping (Response<Result>) -> Void) throws where Result : Decodable {
-    
-  }
-}
-
 struct MockRequest: Request {
   var path: String {
     return ""
@@ -30,7 +20,7 @@ struct MockRequest: Request {
 
 class DispatcherTests: XCTestCase {
   
-  var dispatcher: Dispatcher?
+  var dispatcher: MockDispatcher?
   let environment = Environment("Test", host: "https://revolut.duckdns.org")
   let request = APIRequest.rates(base: "GBP")
   
