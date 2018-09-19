@@ -31,7 +31,6 @@ extension String {
   static let defaultRegion = "EU"
   
   func localizedCurrencyString() -> String {
-    let locale = Locale.fromCurrencyCode(self)
-    return locale?.localizedString(forCurrencyCode: self) ?? self
+    return Locale.current.localizedString(forCurrencyCode: self) ?? self
   }
 }
