@@ -1,11 +1,11 @@
 import Foundation
 
-struct Rates: Decodable {
+struct RawRates: Decodable {
   
   let base: String
   let date: String
   
-  let rates: [Rate]
+  let rates: [RawRate]
   
   enum CodingKeys: String, CodingKey {
     case base
@@ -22,7 +22,7 @@ struct Rates: Decodable {
     
     if let ratesObj = try? container.decode([String: Float].self, forKey: .rates) {
       rates = ratesObj.map {
-        Rate(currency: $0.key, value: $0.value)
+        RawRate(currency: $0.key, value: $0.value)
       }.sorted { $0.currency < $1.currency }
     } else {
       rates = []
@@ -30,7 +30,7 @@ struct Rates: Decodable {
   }
 }
 
-struct Rate {
+struct RawRate {
   let currency: String
   let value: Float
 }

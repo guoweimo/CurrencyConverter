@@ -17,7 +17,7 @@ class CurrencyTextFieldDelegate: NSObject, TextFieldDelegate {
   
   var editChanged: ((NSNumber?) -> Void)?
   
-  func editDidChange(textField: UITextField) {
+  @objc func editDidChange(textField: UITextField) {
     if let number = numberFrom(textField.text) {
       editChanged?(number)
     }
@@ -26,7 +26,7 @@ class CurrencyTextFieldDelegate: NSObject, TextFieldDelegate {
   func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
     if let text = textField.text, !text.isEmpty || !string.isEmpty {
       let res = text + string
-      return Double(res) != nil
+      return Float(res) != nil
     }
     return true
   }
@@ -35,14 +35,15 @@ class CurrencyTextFieldDelegate: NSObject, TextFieldDelegate {
     let currencyFormatter = NumberFormatter()
     currencyFormatter.numberStyle = .currency
     currencyFormatter.currencyCode = "EUR"
+//    currencyFormatter.decimalSeparator = ","
     if let number = numberFrom(textField.text) {
       textField.text = currencyFormatter.string(from: number)
     }
   }
   
   private func numberFrom(_ text: String?) -> NSNumber? {
-    if let text = text, let double = Double(text) {
-      return NSNumber(value: double)
+    if let text = text, let Float = Float(text) {
+      return NSNumber(value: Float)
     }
     return nil
   }

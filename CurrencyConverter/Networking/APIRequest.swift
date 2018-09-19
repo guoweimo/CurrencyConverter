@@ -22,7 +22,7 @@ extension APIRequest: Request {
   var method: HTTPMethod {
     switch self {
     case .rates:
-      return .post
+      return .get
     }
   }
 }
