@@ -20,30 +20,7 @@ class CurrencyListViewController: UITableViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     tableView.register(UINib(nibName: "CurrencyRateTableViewCell", bundle: nil), forCellReuseIdentifier: cellId)
-    
-//    viewModel.requestRates { [weak self] (rates) in
-//      guard let `self` = self else { return }
-//      DispatchQueue.main.async {
-//        let oldCurs = rates?.rates.map { $0.currency }
-//        let newCurs = self.rates.map { $0.currency }
-//        if Set(oldCurs ?? []) == Set(newCurs) {
-//        rates?.rates.enumerated().forEach { index, _ in
-//            if let cell = self.tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? CurrencyRateTableViewCell {
-//              let rate = rates?.rates.first {
-//                $0.currency == cell.titleLabel.text
-//              }
-//              if let rate = rate {
-//                cell.rateField.text = String(format: "%.2f", rate.value * self.viewModel.baseValue)
-//              }
-//            }
-//          }
-//        } else {
-//          self.rates = rates?.rates ?? []
-//        }
-//      }
-//    }
     viewModel.requestRates()
-    
     updateViewOnStateChanged()
   }
   
@@ -57,7 +34,7 @@ class CurrencyListViewController: UITableViewController {
           self.tableView.reloadData()
         case .refresh(let rates):
           self.updateTableView(with: rates)
-        case .baseCurrencyChanged(let newBase):
+        case .baseCurrencyChanged:
           break
         case .baseValueChanged(let newValue):
           break
@@ -96,25 +73,22 @@ extension CurrencyListViewController {
   }
   
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    
+    tableView.deselectRow(at: indexPath, animated: true)
     if let cell = self.tableView.cellForRow(at: indexPath) as? CurrencyRateTableViewCell {
-      becomeBase(currency: cell.titleLabel.text!, value: Float(cell.rateField.text!)!)
+      becomeBase(currency: cell.titleLabel.text!)
     }
   }
 }
 
 extension CurrencyListViewController: CurrencyRateTableViewCellDelegate {
-  func becomeBase(currency: String, value: Float) {
-    
+  
+  func rateTextChanged(to value: String) {
+    viewModel.state.onNext(.baseValueChanged(newValue: value))
   }
   
-  func rateValueChanged(to value: Float) {
-    
-    viewModel.currentRates.enumerated().forEach { index, rate in
-      if let cell = self.tableView.cellForRow(at: IndexPath(row: index, section: 0)) as? CurrencyRateTableViewCell {
-        cell.rateField.text = String(format: "%.2f", rate.value * value)
-      }
-    }
+  func becomeBase(currency: String) {
+    viewModel.state.onNext(.baseCurrencyChanged(newBase: currency))
   }
+  
 }
 

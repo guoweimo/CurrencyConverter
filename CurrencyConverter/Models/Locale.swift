@@ -10,7 +10,7 @@ import Foundation
 
 extension Locale {
   
-  static func fromCurrencyCode(_ currencyCode: String) -> Locale? {
+  private static func fromCurrencyCode(_ currencyCode: String) -> Locale? {
     let allLocales = Locale.availableIdentifiers.map(Locale.init)
     let locale = allLocales.first { $0.currencyCode == currencyCode }
     return locale

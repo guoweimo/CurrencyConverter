@@ -12,7 +12,11 @@ struct CurrencyFormatter {
     currencyFormatter.maximumFractionDigits = 2
   }
   
-  func string(from value: Float) -> String {
-    return currencyFormatter.string(from: NSNumber(value: value)) ?? "\(value)"
+  func string(from value: NSNumber) -> String {
+    return currencyFormatter.string(from: value) ?? "\(value)"
+  }
+  
+  func number(from text: String) -> NSNumber {
+    return currencyFormatter.number(from: text) ?? 0
   }
 }

@@ -14,8 +14,8 @@ class CurrencyRowViewModel {
   
   private var timer: Timer?
   private let base = Variable<String>(.defaultCurrency)
-  private var baseValue: Float = 1
-  private(set) var currentRates: [Rate] = []
+  private let baseValue = Variable<Float>(1)
+  private var currentRates: [Rate] = []
   private let bag = DisposeBag()
   private let dispatcher = NetworkDispatcher<RawRates>(environment: Environment.test)
   
@@ -28,7 +28,13 @@ class CurrencyRowViewModel {
       guard let `self` = self else { return }
       switch s {
       case .baseCurrencyChanged(let new):
-        self.updateRatesOnBaseCurrencyChange(to: new)
+        self.base.value = new
+        self.updateRatesOnBaseCurrencyChanged(to: new)
+      case .baseValueChanged(let newTextValue):
+        let currencyFormatter = CurrencyFormatter(currencyCode: self.base.value)
+        let newValue = currencyFormatter.number(from: newTextValue)
+        self.baseValue.value = newValue.floatValue
+        self.updateRatesOnBaseValueChanged(to: newValue)
       default:
         break
       }
@@ -65,12 +71,23 @@ class CurrencyRowViewModel {
     }
   }
   
-  private func updateRatesOnBaseCurrencyChange(to newCurrency: String) {
-      let basePrevIndex = self.currentRates.index {
-        $0.currency == newCurrency
-      }
-      guard let prevIndex = basePrevIndex else { return }
-      self.currentRates.swapAt(prevIndex, 0)
+  private func updateRatesOnBaseCurrencyChanged(to newCurrency: String) {
+    let basePrevIndex = currentRates.index {
+      $0.currency == newCurrency
+    }
+    guard let prevIndex = basePrevIndex else { return }
+    currentRates.swapAt(prevIndex, 0)
+    baseValue.value = currentRates[0].value
+    let displayRates = currentRates.map(DisplayRate.init)
+    state.onNext(.refresh(rates: displayRates))
+  }
+  
+  private func updateRatesOnBaseValueChanged(to newValue: NSNumber) {
+    currentRates.forEach {
+      $0.value *= newValue.floatValue
+    }
+    let displayRates = currentRates.map(DisplayRate.init)
+    state.onNext(.refresh(rates: displayRates))
   }
   
   private func resetCurrentRates(with newRates: [Rate]) -> [DisplayRate] {
@@ -83,7 +100,7 @@ class CurrencyRowViewModel {
     currentRates.forEach { rate in
       let target = newRates.first { $0 == rate }
       if let target = target {
-         rate.value = target.value
+         rate.value = target.value * baseValue.value
       }
     }
     return currentRates.map(DisplayRate.init)
@@ -92,7 +109,7 @@ class CurrencyRowViewModel {
   //check if rates count change. should only happens in the first time from 0 to count.
   //if happens in other time, mean the API return different currencies.
   private func hasRatesCountChanged(newRates: [Rate]) -> Bool {
-    return self.currentRates.count != newRates.count
+    return currentRates.count != newRates.count
   }
   
   deinit {

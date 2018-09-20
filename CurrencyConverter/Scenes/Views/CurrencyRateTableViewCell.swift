@@ -10,7 +10,7 @@ class CurrencyRateTableViewCell: UITableViewCell {
 
   var delegate: CurrencyRateTableViewCellDelegate?
   
-  private let textFieldDelegate = CurrencyTextFieldDelegate()
+  private var textFieldDelegate: UITextFieldDelegate?
   
   override func awakeFromNib() {
     super.awakeFromNib()
@@ -19,15 +19,8 @@ class CurrencyRateTableViewCell: UITableViewCell {
   
   func prepare() {
     
-    rateField.delegate = textFieldDelegate
     rateField.addTarget(self, action: #selector(startEditing), for: .editingDidBegin)
-    rateField.addTarget(textFieldDelegate, action: #selector(CurrencyTextFieldDelegate.editDidChange), for: .editingChanged)
-    textFieldDelegate.editChanged = { [weak self] number in
-      guard let `self` = self else {
-        return
-      }
-      self.delegate?.rateValueChanged(to: number?.floatValue ?? 0)
-    }
+    rateField.addTarget(self, action: #selector(editDidChange), for: .editingChanged)
   }
   
   func update(with rate: DisplayRate) {
@@ -35,15 +28,20 @@ class CurrencyRateTableViewCell: UITableViewCell {
     titleLabel.text = rate.currencyCode
     detailLabel.text = rate.currencyName
     rateField.text = rate.formattedValue
+    rateField.delegate = CurrencyTextFieldDelegate(currencyCode: rate.currencyCode)
+  }
+  
+  @objc private func editDidChange() {
+    delegate?.rateTextChanged(to: rateField.text ?? "")
   }
   
   @objc private func startEditing() {
-    delegate?.becomeBase(currency: titleLabel.text!, value: Float(rateField.text!)!)
+    delegate?.becomeBase(currency: titleLabel.text!)
   }
 }
 
 
 protocol CurrencyRateTableViewCellDelegate {
-  func becomeBase(currency: String, value: Float)
-  func rateValueChanged(to value: Float)
+  func becomeBase(currency: String)
+  func rateTextChanged(to text: String)
 }
