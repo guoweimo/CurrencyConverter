@@ -37,14 +37,14 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" placeholder="1" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Uau-Ya-x17">
-                        <rect key="frame" x="272" y="19.5" width="40" height="24"/>
+                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="1" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Uau-Ya-x17" customClass="TextField" customModule="CurrencyConverter" customModuleProvider="target">
+                        <rect key="frame" x="272" y="21.5" width="40" height="20"/>
                         <constraints>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="40" id="qIC-yi-Cwd"/>
                         </constraints>
                         <nil key="textColor"/>
                         <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                        <textInputTraits key="textInputTraits" keyboardType="decimalPad"/>
+                        <textInputTraits key="textInputTraits" autocorrectionType="no" keyboardType="decimalPad"/>
                     </textField>
                 </subviews>
                 <constraints>
@@ -64,8 +64,9 @@
             <connections>
                 <outlet property="detailLabel" destination="kT0-dg-d6u" id="HU1-RY-Awl"/>
                 <outlet property="iconView" destination="aXX-16-0Ha" id="KPe-z5-sGe"/>
-                <outlet property="rateField" destination="Uau-Ya-x17" id="SeE-0Z-JaH"/>
                 <outlet property="titleLabel" destination="B8K-Se-lZi" id="f9B-0U-whl"/>
+                <outlet property="valueField" destination="Uau-Ya-x17" id="ixh-DB-2ha"/>
+                <outlet property="valueFieldWidthConstraint" destination="qIC-yi-Cwd" id="bsn-9B-DDn"/>
             </connections>
             <point key="canvasLocation" x="34" y="64"/>
         </tableViewCell>

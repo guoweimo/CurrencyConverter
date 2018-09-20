@@ -5,26 +5,31 @@ import RxSwift
 enum State {
   case initial(rates: [DisplayRate])
   case refresh(rates: [DisplayRate])
+  case failToLoad(Error?)
+}
+
+enum Event {
   case baseCurrencyChanged(newBase: String)
   case baseValueChanged(newValue: String)
-  case failToLoad(Error?)
 }
 
 class CurrencyRowViewModel {
   
   private var timer: Timer?
   private let base = Variable<String>(.defaultCurrency)
-  private let baseValue = Variable<Float>(1)
+  
+  let baseValue = Variable<Float>(1)
   private var currentRates: [Rate] = []
   private let bag = DisposeBag()
   private let dispatcher = NetworkDispatcher<RawRates>(environment: Environment.test)
   
   let state: BehaviorSubject<State>
+  let event = PublishSubject<Event>()
   
   init() {
     
     state = BehaviorSubject(value: .initial(rates: []))
-    state.subscribeNext { [weak self] s in
+    event.subscribeNext { [weak self] s in
       guard let `self` = self else { return }
       switch s {
       case .baseCurrencyChanged(let new):
@@ -35,8 +40,6 @@ class CurrencyRowViewModel {
         let newValue = currencyFormatter.number(from: newTextValue)
         self.baseValue.value = newValue.floatValue
         self.updateRatesOnBaseValueChanged(to: newValue)
-      default:
-        break
       }
     }.disposed(by: bag)
   }
