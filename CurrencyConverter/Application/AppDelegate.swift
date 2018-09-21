@@ -15,7 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
     window = UIWindow(frame: UIScreen.main.bounds)
-    let vm = CurrencyRowViewModel()
+    let vm = CurrencyRowViewModel(dispatcher: NetworkDispatcher(environment: .test))
     window?.rootViewController = CurrencyListViewController(viewModel: vm)
     window?.makeKeyAndVisible()
     return true

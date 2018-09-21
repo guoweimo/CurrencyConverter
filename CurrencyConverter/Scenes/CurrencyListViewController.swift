@@ -23,12 +23,12 @@ class CurrencyListViewController: UITableViewController {
     tableView.separatorStyle = .none
     tableView.keyboardDismissMode = .interactive
     tableView.register(UINib(nibName: cellId, bundle: nil), forCellReuseIdentifier: cellId)
-    viewModel.requestRates()
-    updateViewOnStateChanged()
+    updateViewOnRatesChanged()
   }
   
-  func updateViewOnStateChanged() {
-    viewModel.state.subscribeNext { [weak self] state in
+  func updateViewOnRatesChanged() {
+    viewModel.requestRates().subscribeNext {
+      [weak self] state in
       guard let `self` = self else { return }
       DispatchQueue.main.async {
         switch state {
@@ -41,6 +41,8 @@ class CurrencyListViewController: UITableViewController {
         case .failToLoad(let error):
           AlertController.showError(with: error?.localizedDescription ?? .standardRatesError,
                                     on: self)
+        case .loading:
+          break
         }
       }
     }.disposed(by: bag)
@@ -57,8 +59,8 @@ class CurrencyListViewController: UITableViewController {
     }
   }
   
-  func baseCellDidChanged(with currencyId: String, at indexPath: IndexPath) {
-    viewModel.event.onNext(.baseCurrencyChanged(newBase: currencyId))
+  func baseCellDidChanged(with currencyId: String, and text: String, at indexPath: IndexPath) {
+    viewModel.event.onNext(.baseRateChanged(to: currencyId, text: text))
     UIView.animate(withDuration: 0.5, animations: {
       self.tableView.moveRow(at: indexPath, to: .zero)
     })
@@ -82,17 +84,18 @@ extension CurrencyListViewController {
   
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     tableView.deselectRow(at: indexPath, animated: true)
-    if let cell = tableView.cellForRow(at: indexPath) as? CurrencyRateTableViewCell {
-      guard let currencyId = cell.currencyId else { return }
-      baseCellDidChanged(with: currencyId, at: indexPath)
+    if let cell = tableView.cellForRow(at: indexPath) as? CurrencyRateTableViewCell,
+      let currencyId = cell.currencyId {
+      cell.startEditing()
+      baseCellDidChanged(with: currencyId, and: cell.valueField.text ?? "", at: indexPath)
     }
   }
 }
 
 extension CurrencyListViewController: CurrencyRateTableViewCellDelegate {
-  func becomeBase(_ currency: String) {
+  func becomeBase(_ currency: String, with text: String) {
     if let indexPath = viewModel.indexPath(for: currency) {
-      baseCellDidChanged(with: currency, at: indexPath)
+      baseCellDidChanged(with: currency, and: text, at: indexPath)
     }
   }
   

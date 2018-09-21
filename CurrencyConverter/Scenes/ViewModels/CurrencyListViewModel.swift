@@ -6,124 +6,107 @@ enum State {
   case initial(rates: [DisplayRate])
   case refresh(rates: [DisplayRate])
   case failToLoad(Error?)
+  case loading
 }
 
 enum Event {
-  case baseCurrencyChanged(newBase: String)
+  case baseRateChanged(to: String, text: String)
   case baseValueChanged(newValue: String)
 }
 
 class CurrencyRowViewModel {
   
-  private var timer: Timer?
+  private let initialBase = Rate(currency: .defaultCurrency, value: 1)
   
-  private var base: String = .defaultCurrency
-  private var baseValue: Float = 1
+  private let baseRate: Variable<Rate>
   
-  private var currentRates: [Rate] = []
+  private let currentRates = Variable<[Rate]>([])
   private let bag = DisposeBag()
-  private let dispatcher = NetworkDispatcher<RawRates>(environment: Environment.test)
   
-  let state: BehaviorSubject<State>
+  private let dispatcher: Dispatcher
+  
+  private let state: BehaviorSubject<State>
   let event = PublishSubject<Event>()
   
-  init() {
+  init(dispatcher: Dispatcher) {
     
+    self.dispatcher = dispatcher
     state = BehaviorSubject(value: .initial(rates: []))
-    event.subscribeNext { [weak self] event in
-      guard let `self` = self else { return }
+    baseRate = Variable(initialBase)
+    
+    event.map { event -> Rate in
       switch event {
-      case .baseCurrencyChanged(let new):
-        self.updateRatesOnBaseCurrencyChanged(to: new)
-        self.base = new
+      case .baseRateChanged(let new, let text):
+        let newValue = CurrencyFormatter(currencyCode: new).number(from: text)
+        return Rate(currency: new, value: newValue.floatValue)
       case .baseValueChanged(let newTextValue):
-        let newValue = CurrencyFormatter(currencyCode: self.base).number(from: newTextValue)
-        let ratio = newValue.floatValue / self.baseValue
-        self.updateRatesOnBaseValueChanged(to: ratio)
-        self.baseValue = newValue.floatValue
+        let currency = self.baseRate.value.currency
+        let newValue = CurrencyFormatter(currencyCode: currency).number(from: newTextValue)
+        return Rate(currency: currency, value: newValue.floatValue)
       }
+    }.bind(to: baseRate)
+    .disposed(by: bag)
+    
+    baseRate.asObservable().map {
+      base -> [Rate] in
+      let basePrevIndex = self.currentRates.value.index(of: base)
+      var newRates = self.currentRates.value
+      guard let prevIndex = basePrevIndex, prevIndex != 0 else { return newRates }
+      newRates.insert(newRates.remove(at: prevIndex), at: 0)
+      return newRates
+    }.bind(to: currentRates)
+    .disposed(by: bag)
+      
+    currentRates.asObservable().subscribeNext { rates in
+      rates.forEach { $0.value *= self.baseRate.value.value }
+      self.state.onNext(.refresh(rates: rates.map(DisplayRate.init)))
     }.disposed(by: bag)
   }
   
-  func requestRates(on interval: Double = 1) {
-    timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) {
-      [weak self] t in
-      guard let `self` = self else {
-        t.invalidate()
-        return
-      }
-      do {
-        try self.dispatcher.fetch(request: APIRequest.rates(base: self.base), completion: { (response) in
-          switch response {
-          case .data(let rawRates):
+  func requestRates(on interval: Double = 1) -> Observable<State> {
+    return Observable<Int>.interval(interval, scheduler: MainScheduler.asyncInstance)
+      .flatMap { [weak self] cnt -> Observable<State> in
+        guard let `self` = self else { return Observable.just(.loading) }
+        let loadableRates = RatesWorker(base: self.baseRate.value.currency).doWork(in: self.dispatcher)
+        return loadableRates.map { state in
+          switch state {
+          case .loaded(let rawRates):
             let group = RatesGroup(with: rawRates)
-            let countChanged = self.hasRatesCountChanged(newRates: group.rates)
+            let countChanged = self.currentRates.value.count != group.rates.count
+            let displayRates = self.makeDisplayRates(with: group.rates, countChanged: countChanged)
             if countChanged {
-              let displayRates = self.resetCurrentRates(with: group.rates)
-              self.state.onNext(.initial(rates: displayRates))
+              return .initial(rates: displayRates)
             } else {
-              let displayRates = self.updateCurrentRates(with: group.rates)
-              self.state.onNext(.refresh(rates: displayRates))
+              return .refresh(rates: displayRates)
             }
-          case .error(let error):
-            self.state.onNext(.failToLoad(error))
+          case .failed(let error):
+            return .failToLoad(error)
+          case .loading:
+            return .loading
           }
-        })
-      } catch {
-        self.state.onNext(.failToLoad(error))
-      }
+        }
     }
-  }
-  
-  //MARK: events
-  private func updateRatesOnBaseCurrencyChanged(to newCurrency: String) {
-    let basePrevIndex = currentRates.index {
-      $0.currency == newCurrency
-    }
-    guard let prevIndex = basePrevIndex else { return }
-    currentRates.insert(currentRates.remove(at: prevIndex), at: 0)
-    baseValue = currentRates[0].value
-    state.onNext(.refresh(rates: currentRates.map(DisplayRate.init)))
-  }
-  
-  private func updateRatesOnBaseValueChanged(to newValue: Float) {
-    currentRates.forEach { $0.value *= newValue }
-    state.onNext(.refresh(rates: currentRates.map(DisplayRate.init)))
-  }
-  
-  //MARK: initial state
-  private func resetCurrentRates(with newRates: [Rate]) -> [DisplayRate] {
-    currentRates = newRates
-    return currentRates.map(DisplayRate.init)
   }
   
   //MARK: refresh state
-  private func updateCurrentRates(with newRates: [Rate]) -> [DisplayRate] {
-    
-    currentRates.forEach { rate in
+  private func makeDisplayRates(with newRates: [Rate], countChanged: Bool) -> [DisplayRate] {
+    if countChanged {
+      currentRates.value = newRates
+    } 
+    return currentRates.value.map { rate -> Rate in
       let target = newRates.first { $0 == rate }
       if let target = target {
-         rate.value = target.value * baseValue
+        rate.value = target.value * baseRate.value.value
       }
-    }
-    return currentRates.map(DisplayRate.init)
-  }
-  
-  //check if rates count change. should only happens in the first time from 0 to count.
-  //if happens in other time, mean the API return different currencies.
-  private func hasRatesCountChanged(newRates: [Rate]) -> Bool {
-    return currentRates.count != newRates.count
+      return rate
+    }.map(DisplayRate.init)
   }
   
   func indexPath(for currencyId: String) -> IndexPath? {
-    let index = currentRates.index {
+    let index = currentRates.value.index {
       $0.currency == currencyId
     }
     return index.map { IndexPath(row: $0, section: 0) }
-  }
-  
-  deinit {
-    timer?.invalidate()
   }
   
 }

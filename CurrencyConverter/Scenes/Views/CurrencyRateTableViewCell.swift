@@ -29,7 +29,8 @@ class CurrencyRateTableViewCell: UITableViewCell {
     valueField.rx.controlEvent(.editingDidBegin).bind { [weak self] in
       guard let `self` = self, let currencyId = self.currencyId else { return }
 //      self.baseCellDidChanged(with: currencyId, at: indexPath)
-      self.delegate?.becomeBase(currencyId)
+      let text = self.valueField.text ?? ""
+      self.delegate?.becomeBase(currencyId, with: text)
       }.disposed(by: bag)
     
     valueField.rx.controlEvent(.editingChanged).bind { [weak self] in

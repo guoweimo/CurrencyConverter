@@ -1,7 +1,7 @@
 import Foundation
 
-enum Response<Result> where Result: Decodable {
-  case data(Result)
+enum Response {
+  case data(Data?)
   case error(Error?)
   
   init(_ response: HTTPURLResponse?, data: Data?, error: Error?) {
@@ -15,10 +15,6 @@ enum Response<Result> where Result: Decodable {
       return
     }
     
-    guard let ret = try? JSONDecoder().decode(Result.self, from: data) else {
-      self = .error(Errors.malformedData)
-      return
-    }
-    self = .data(ret)
+    self = .data(data)
   }
 }

@@ -23,7 +23,7 @@ class RatesResponseTests: XCTestCase {
     }
   }
   
-  private func assertRates(_ rates: Rates) {
+  private func assertRates(_ rates: RawRates) {
     XCTAssertEqual(rates.base, "EUR")
     XCTAssertEqual(rates.rates.count, 32)
     
@@ -52,17 +52,17 @@ class RatesResponseTests: XCTestCase {
 
 
 struct MockDispatcher: Dispatcher {
-  typealias Data = Rates
+  typealias Data = RawRates
   init(environment: Environment) {
     
   }
   
-  func fetch(request: Request, completion: @escaping (Response<Rates>) -> Void) throws {
+  func fetch(request: Request, completion: @escaping (Response<RawRates>) -> Void) throws {
     guard let data = MockData.from(file: "sample_rates") else {
       return
     }
     let mockResponseState = HTTPURLResponse(url: URL(string: "www.google.co.uk")!, statusCode: 200, httpVersion: nil, headerFields: nil)
-    let response = Response<Rates>(mockResponseState, data: data, error: nil)
+    let response = Response<RawRates>(mockResponseState, data: data, error: nil)
     completion(response)
   }
 }
