@@ -41,7 +41,10 @@
 		E49716CF21540D0B0058635D /* RxSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E49716B52152D5390058635D /* RxSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E49716D1215415FB0058635D /* IndexPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49716D0215415FB0058635D /* IndexPath.swift */; };
 		E49716D321541ECE0058635D /* AlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49716D221541ECE0058635D /* AlertController.swift */; };
-		E49716D5215420080058635D /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49716D4215420080058635D /* String.swift */; };
+		E49716D5215420080058635D /* String+Copies.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49716D4215420080058635D /* String+Copies.swift */; };
+		E4D9968C21543A390039DF9C /* CurrencyRateTableViewCellDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D9968B21543A390039DF9C /* CurrencyRateTableViewCellDelegate.swift */; };
+		E4D99699215455790039DF9C /* IGListKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E4D9968F215450A80039DF9C /* IGListKit.framework */; };
+		E4D9969A215455790039DF9C /* IGListKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E4D9968F215450A80039DF9C /* IGListKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,6 +74,7 @@
 				E49716C5215308710058635D /* RxCocoa.framework in Embed Frameworks */,
 				E49716C12152F3D60058635D /* FlagKit.framework in Embed Frameworks */,
 				E49716CF21540D0B0058635D /* RxSwift.framework in Embed Frameworks */,
+				E4D9969A215455790039DF9C /* IGListKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -118,7 +122,9 @@
 		E49716CC21540AE40058635D /* TextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextField.swift; sourceTree = "<group>"; };
 		E49716D0215415FB0058635D /* IndexPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexPath.swift; sourceTree = "<group>"; };
 		E49716D221541ECE0058635D /* AlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertController.swift; sourceTree = "<group>"; };
-		E49716D4215420080058635D /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
+		E49716D4215420080058635D /* String+Copies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Copies.swift"; sourceTree = "<group>"; };
+		E4D9968B21543A390039DF9C /* CurrencyRateTableViewCellDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyRateTableViewCellDelegate.swift; sourceTree = "<group>"; };
+		E4D9968F215450A80039DF9C /* IGListKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IGListKit.framework; path = Carthage/Build/iOS/IGListKit.framework; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,6 +132,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E4D99699215455790039DF9C /* IGListKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -305,6 +312,7 @@
 			isa = PBXGroup;
 			children = (
 				E497169F214D9DB60058635D /* TextFieldDelegate.swift */,
+				E4D9968B21543A390039DF9C /* CurrencyRateTableViewCellDelegate.swift */,
 			);
 			path = Delegates;
 			sourceTree = "<group>";
@@ -312,6 +320,7 @@
 		E49716AE2152CCA60058635D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E4D9968F215450A80039DF9C /* IGListKit.framework */,
 				E49716C3215308420058635D /* RxCocoa.framework */,
 				E49716B52152D5390058635D /* RxSwift.framework */,
 				E49716B32152D3F40058635D /* FlagKit.framework */,
@@ -324,7 +333,7 @@
 			children = (
 				E49716B72152DE930058635D /* Observable+Wrapper.swift */,
 				E49716D0215415FB0058635D /* IndexPath.swift */,
-				E49716D4215420080058635D /* String.swift */,
+				E49716D4215420080058635D /* String+Copies.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -464,7 +473,7 @@
 			files = (
 				E497167E214C57040058635D /* Response.swift in Sources */,
 				E49716A9214DB2240058635D /* Rates.swift in Sources */,
-				E49716D5215420080058635D /* String.swift in Sources */,
+				E49716D5215420080058635D /* String+Copies.swift in Sources */,
 				E497169A214D99770058635D /* Action.swift in Sources */,
 				E49716CD21540AE40058635D /* TextField.swift in Sources */,
 				E497168C214C6F340058635D /* RawRates.swift in Sources */,
@@ -477,6 +486,7 @@
 				E49716BD2152F1280058635D /* DisplayRate.swift in Sources */,
 				E4971681214C57040058635D /* NetworkDispatcher.swift in Sources */,
 				E4971645214C55BD0058635D /* AppDelegate.swift in Sources */,
+				E4D9968C21543A390039DF9C /* CurrencyRateTableViewCellDelegate.swift in Sources */,
 				E4971680214C57040058635D /* APIRequest.swift in Sources */,
 				E4971685214C5E950058635D /* Errors.swift in Sources */,
 				E49716B82152DE930058635D /* Observable+Wrapper.swift in Sources */,

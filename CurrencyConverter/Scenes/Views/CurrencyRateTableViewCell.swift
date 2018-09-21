@@ -1,5 +1,6 @@
 import UIKit
 import FlagKit
+import RxSwift
 
 class CurrencyRateTableViewCell: UITableViewCell {
   
@@ -10,25 +11,46 @@ class CurrencyRateTableViewCell: UITableViewCell {
   
   @IBOutlet weak var valueFieldWidthConstraint: NSLayoutConstraint!
   private(set) var currencyId: String?
-  
-  private var textFieldDelegate: UITextFieldDelegate?
+  private let textFieldDelegate = CurrencyTextFieldDelegate()
+  private let bag = DisposeBag()
+  var delegate: CurrencyRateTableViewCellDelegate?
   
   override func awakeFromNib() {
     super.awakeFromNib()
-    valueField.addBottomBorder(width: valueFieldWidthConstraint.constant)
+    prepare()
   }
   
   override func draw(_ rect: CGRect) {
+    valueField.addBottomBorder(width: valueFieldWidthConstraint.constant)
+  }
+  
+  private func prepare() {
+    valueField.delegate = textFieldDelegate
+    valueField.rx.controlEvent(.editingDidBegin).bind { [weak self] in
+      guard let `self` = self, let currencyId = self.currencyId else { return }
+//      self.baseCellDidChanged(with: currencyId, at: indexPath)
+      self.delegate?.becomeBase(currencyId)
+      }.disposed(by: bag)
+    
+    valueField.rx.controlEvent(.editingChanged).bind { [weak self] in
+      guard let `self` = self else { return }
+      let text = self.valueField.text ?? ""
+//      self.viewModel.event.onNext(.baseValueChanged(newValue: text))
+      self.delegate?.rateTextChanged(to: text)
+    }.disposed(by: bag)
+  }
+  
+  func startEditing() {
+    detailLabel.becomeFirstResponder()
   }
   
   func update(with rate: DisplayRate) {
-    if currencyId != rate.currencyId {
-      currencyId = rate.currencyId
-      iconView.image = rate.flagId.flatMap { Flag(countryCode: $0)?.image(style: .circle) }
-      titleLabel.text = rate.currencyCode
-      detailLabel.text = rate.currencyName
+    currencyId = rate.currencyId
+    iconView.image = rate.flagId.flatMap { Flag(countryCode: $0)?.image(style: .circle) }
+    titleLabel.text = rate.currencyCode
+    detailLabel.text = rate.currencyName
+    if !valueField.isFirstResponder {
+      valueField.text = rate.formattedValue
     }
-    valueField.text = rate.formattedValue
-    valueField.delegate = CurrencyTextFieldDelegate(currencyCode: rate.currencyCode)
   }
 }

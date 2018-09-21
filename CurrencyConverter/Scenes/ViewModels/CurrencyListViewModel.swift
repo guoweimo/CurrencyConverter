@@ -16,9 +16,10 @@ enum Event {
 class CurrencyRowViewModel {
   
   private var timer: Timer?
-  private let base = Variable<String>(.defaultCurrency)
   
-  let baseValue = Variable<Float>(1)
+  private var base: String = .defaultCurrency
+  private var baseValue: Float = 1
+  
   private var currentRates: [Rate] = []
   private let bag = DisposeBag()
   private let dispatcher = NetworkDispatcher<RawRates>(environment: Environment.test)
@@ -29,17 +30,17 @@ class CurrencyRowViewModel {
   init() {
     
     state = BehaviorSubject(value: .initial(rates: []))
-    event.subscribeNext { [weak self] s in
+    event.subscribeNext { [weak self] event in
       guard let `self` = self else { return }
-      switch s {
+      switch event {
       case .baseCurrencyChanged(let new):
-        self.base.value = new
         self.updateRatesOnBaseCurrencyChanged(to: new)
+        self.base = new
       case .baseValueChanged(let newTextValue):
-        let currencyFormatter = CurrencyFormatter(currencyCode: self.base.value)
-        let newValue = currencyFormatter.number(from: newTextValue)
-        self.baseValue.value = newValue.floatValue
-        self.updateRatesOnBaseValueChanged(to: newValue)
+        let newValue = CurrencyFormatter(currencyCode: self.base).number(from: newTextValue)
+        let ratio = newValue.floatValue / self.baseValue
+        self.updateRatesOnBaseValueChanged(to: ratio)
+        self.baseValue = newValue.floatValue
       }
     }.disposed(by: bag)
   }
@@ -52,7 +53,7 @@ class CurrencyRowViewModel {
         return
       }
       do {
-        try self.dispatcher.fetch(request: APIRequest.rates(base: self.base.value), completion: { (response) in
+        try self.dispatcher.fetch(request: APIRequest.rates(base: self.base), completion: { (response) in
           switch response {
           case .data(let rawRates):
             let group = RatesGroup(with: rawRates)
@@ -74,36 +75,35 @@ class CurrencyRowViewModel {
     }
   }
   
+  //MARK: events
   private func updateRatesOnBaseCurrencyChanged(to newCurrency: String) {
     let basePrevIndex = currentRates.index {
       $0.currency == newCurrency
     }
     guard let prevIndex = basePrevIndex else { return }
-    currentRates.swapAt(prevIndex, 0)
-    baseValue.value = currentRates[0].value
-    let displayRates = currentRates.map(DisplayRate.init)
-    state.onNext(.refresh(rates: displayRates))
+    currentRates.insert(currentRates.remove(at: prevIndex), at: 0)
+    baseValue = currentRates[0].value
+    state.onNext(.refresh(rates: currentRates.map(DisplayRate.init)))
   }
   
-  private func updateRatesOnBaseValueChanged(to newValue: NSNumber) {
-    currentRates.forEach {
-      $0.value *= newValue.floatValue
-    }
-    let displayRates = currentRates.map(DisplayRate.init)
-    state.onNext(.refresh(rates: displayRates))
+  private func updateRatesOnBaseValueChanged(to newValue: Float) {
+    currentRates.forEach { $0.value *= newValue }
+    state.onNext(.refresh(rates: currentRates.map(DisplayRate.init)))
   }
   
+  //MARK: initial state
   private func resetCurrentRates(with newRates: [Rate]) -> [DisplayRate] {
     currentRates = newRates
     return currentRates.map(DisplayRate.init)
   }
   
+  //MARK: refresh state
   private func updateCurrentRates(with newRates: [Rate]) -> [DisplayRate] {
     
     currentRates.forEach { rate in
       let target = newRates.first { $0 == rate }
       if let target = target {
-         rate.value = target.value * baseValue.value
+         rate.value = target.value * baseValue
       }
     }
     return currentRates.map(DisplayRate.init)
@@ -113,6 +113,13 @@ class CurrencyRowViewModel {
   //if happens in other time, mean the API return different currencies.
   private func hasRatesCountChanged(newRates: [Rate]) -> Bool {
     return currentRates.count != newRates.count
+  }
+  
+  func indexPath(for currencyId: String) -> IndexPath? {
+    let index = currentRates.index {
+      $0.currency == currencyId
+    }
+    return index.map { IndexPath(row: $0, section: 0) }
   }
   
   deinit {

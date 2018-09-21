@@ -9,6 +9,7 @@ struct CurrencyFormatter {
     currencyFormatter = NumberFormatter()
 //    currencyFormatter.numberStyle = .currency
     currencyFormatter.currencyCode = currencyCode
+    currencyFormatter.currencyDecimalSeparator = Locale.current.decimalSeparator ?? "."
     currencyFormatter.maximumFractionDigits = 2
   }
   

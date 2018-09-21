@@ -4,7 +4,7 @@ import RxCocoa
 
 class CurrencyListViewController: UITableViewController {
   
-  let cellId = NSStringFromClass(CurrencyRateTableViewCell.self)
+  private let cellId = String(describing: CurrencyRateTableViewCell.self)
   private let viewModel: CurrencyRowViewModel
   private let bag = DisposeBag()
   private var displayRates: [DisplayRate] = []
@@ -20,7 +20,9 @@ class CurrencyListViewController: UITableViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    tableView.register(UINib(nibName: "CurrencyRateTableViewCell", bundle: nil), forCellReuseIdentifier: cellId)
+    tableView.separatorStyle = .none
+    tableView.keyboardDismissMode = .interactive
+    tableView.register(UINib(nibName: cellId, bundle: nil), forCellReuseIdentifier: cellId)
     viewModel.requestRates()
     updateViewOnStateChanged()
   }
@@ -34,6 +36,7 @@ class CurrencyListViewController: UITableViewController {
           self.displayRates = rates
           self.tableView.reloadData()
         case .refresh(let rates):
+          self.displayRates = rates
           self.updateTableView(with: rates)
         case .failToLoad(let error):
           AlertController.showError(with: error?.localizedDescription ?? .standardRatesError,
@@ -45,7 +48,7 @@ class CurrencyListViewController: UITableViewController {
   
   func updateTableView(with rates: [DisplayRate]) {
     guard rates.count == tableView.numberOfRows(inSection: 0) else {
-      fatalError("unmatched number of currencies and table rows!")
+      fatalError(.unmatchedTableRowsCount)
     }
     rates.enumerated().forEach { index, rate in
       if let cell = tableView.cellForRow(at: IndexPath(item: index, section: 0)) as? CurrencyRateTableViewCell {
@@ -71,18 +74,7 @@ extension CurrencyListViewController {
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     if let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as? CurrencyRateTableViewCell {
       cell.update(with: displayRates[indexPath.row])
-      
-      cell.valueField.rx.controlEvent(.editingDidBegin).bind { [weak self] in
-        guard let `self` = self, let currencyId = cell.currencyId else { return }
-        self.baseCellDidChanged(with: currencyId, at: indexPath)
-      }.disposed(by: bag)
-      
-      cell.valueField.rx.controlEvent(.editingChanged).bind { [weak self] in
-        guard let `self` = self else { return }
-        let text = cell.valueField.text ?? ""
-        self.viewModel.event.onNext(.baseValueChanged(newValue: text))
-      }.disposed(by: bag)
-      
+      cell.delegate = self
       return cell
     }
     return UITableViewCell()
@@ -94,5 +86,17 @@ extension CurrencyListViewController {
       guard let currencyId = cell.currencyId else { return }
       baseCellDidChanged(with: currencyId, at: indexPath)
     }
+  }
+}
+
+extension CurrencyListViewController: CurrencyRateTableViewCellDelegate {
+  func becomeBase(_ currency: String) {
+    if let indexPath = viewModel.indexPath(for: currency) {
+      baseCellDidChanged(with: currency, at: indexPath)
+    }
+  }
+  
+  func rateTextChanged(to text: String) {
+    viewModel.event.onNext(.baseValueChanged(newValue: text))
   }
 }
