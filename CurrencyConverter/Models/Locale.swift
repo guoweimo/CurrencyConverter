@@ -1,10 +1,3 @@
-//
-//  Locale.swift
-//  CurrencyConverter
-//
-//  Created by Guowei Mo on 19/09/2018.
-//  Copyright © 2018 Guowei Mo. All rights reserved.
-//
 
 import Foundation
 

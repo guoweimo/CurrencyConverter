@@ -1,10 +1,3 @@
-//
-//  TextFieldDelegate.swift
-//  CurrencyConverter
-//
-//  Created by Guowei Mo on 15/09/2018.
-//  Copyright © 2018 Guowei Mo. All rights reserved.
-//
 
 import UIKit
 import Foundation
@@ -12,6 +5,11 @@ import Foundation
 class CurrencyTextFieldDelegate: NSObject, UITextFieldDelegate {
   
   let separator = Locale.current.decimalSeparator ?? "."
+  
+  private let maxFractionDigits: Int
+  init(preferMaxFractionDigits: Int = 2) {
+    self.maxFractionDigits = preferMaxFractionDigits
+  }
   
   func textFieldShouldReturn(_ textField: UITextField) -> Bool {
     return textField.resignFirstResponder()
@@ -23,17 +21,13 @@ class CurrencyTextFieldDelegate: NSObject, UITextFieldDelegate {
     }
     if let text = textField.text,
       let textRange = Range(range, in: text) {
-      
       let updatedText = text.replacingCharacters(in: textRange, with: string)
       let parts = updatedText.components(separatedBy: separator)
-      if parts.count > 2 { // 20.00.1
-        return false
-      }
       if parts.count == 2 {
-        if parts[1].count > 2 { //20.001
+        if parts[1].count > maxFractionDigits { //20.001
           return false
         }
-        return true  // 20.
+        return true  // e.g 20.1 or 20.
       }
       return Float(updatedText) != nil
     }

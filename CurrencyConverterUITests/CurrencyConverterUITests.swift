@@ -1,10 +1,3 @@
-//
-//  CurrencyConverterUITests.swift
-//  CurrencyConverterUITests
-//
-//  Created by Guowei Mo on 20/09/2018.
-//  Copyright © 2018 Guowei Mo. All rights reserved.
-//
 
 import XCTest
 
@@ -23,7 +16,7 @@ class CurrencyConverterUITests: XCTestCase {
   
   func verifyCells() {
     let euroCell = app.cells["EUR"]
-    XCTAssertTrue(euroCell.waitForExistence(timeout: 2))
+    XCTAssertTrue(euroCell.waitForExistence(timeout: 3))
   }
   
   func verifyTypingValue() {
@@ -31,8 +24,12 @@ class CurrencyConverterUITests: XCTestCase {
     let textfield = euroCell.textFields["rateField"]
     textfield.tap()
     textfield.typeText("0")
+    textfield.typeText("X")
+    textfield.typeText(".")
+    textfield.typeText("5")
+
     textfield.typeText(XCUIKeyboardKey.return.rawValue)
-    XCTAssertEqual(textfield.value as! String, "10")
+    XCTAssertEqual(textfield.value as! String, "10.5")
   }
   
   func verifyMoveCells() {

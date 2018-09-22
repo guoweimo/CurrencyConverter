@@ -32,7 +32,6 @@
 		E497168E214C73210058635D /* MockData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E497168D214C73210058635D /* MockData.swift */; };
 		E4971691214C73DB0058635D /* RatesViewModelTests+Requests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4971690214C73DB0058635D /* RatesViewModelTests+Requests.swift */; };
 		E4971692214C7BB30058635D /* sample_rates.json in Resources */ = {isa = PBXBuildFile; fileRef = E4971688214C6C070058635D /* sample_rates.json */; };
-		E497169A214D99770058635D /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4971699214D99770058635D /* Action.swift */; };
 		E49716A0214D9DB60058635D /* TextFieldDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E497169F214D9DB60058635D /* TextFieldDelegate.swift */; };
 		E49716A7214DB17D0058635D /* RatesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49716A6214DB17D0058635D /* RatesViewModel.swift */; };
 		E49716A9214DB2240058635D /* Rates.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49716A8214DB2240058635D /* Rates.swift */; };
@@ -118,7 +117,6 @@
 		E497168B214C6F340058635D /* RawRates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RawRates.swift; sourceTree = "<group>"; };
 		E497168D214C73210058635D /* MockData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockData.swift; sourceTree = "<group>"; };
 		E4971690214C73DB0058635D /* RatesViewModelTests+Requests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RatesViewModelTests+Requests.swift"; sourceTree = "<group>"; };
-		E4971699214D99770058635D /* Action.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Action.swift; sourceTree = "<group>"; };
 		E497169F214D9DB60058635D /* TextFieldDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldDelegate.swift; sourceTree = "<group>"; };
 		E49716A6214DB17D0058635D /* RatesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatesViewModel.swift; sourceTree = "<group>"; };
 		E49716A8214DB2240058635D /* Rates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rates.swift; sourceTree = "<group>"; };
@@ -259,7 +257,6 @@
 			isa = PBXGroup;
 			children = (
 				E4D9969F2155569F0039DF9C /* Loadable.swift */,
-				E4971699214D99770058635D /* Action.swift */,
 				E49716A8214DB2240058635D /* Rates.swift */,
 				E49716AF2152D05C0058635D /* Locale.swift */,
 				E49716BA2152EF840058635D /* CurrencyFormatter.swift */,
@@ -502,7 +499,6 @@
 				E497167E214C57040058635D /* Response.swift in Sources */,
 				E49716A9214DB2240058635D /* Rates.swift in Sources */,
 				E49716D5215420080058635D /* String+Copies.swift in Sources */,
-				E497169A214D99770058635D /* Action.swift in Sources */,
 				E4D9969C215551250039DF9C /* Worker.swift in Sources */,
 				E497168C214C6F340058635D /* RawRates.swift in Sources */,
 				E4D9969E215552710039DF9C /* RatesWorker.swift in Sources */,
