@@ -13,7 +13,7 @@ class CurrencyRateTableViewCell: UITableViewCell {
   private(set) var currencyId: String?
   private let textFieldDelegate = CurrencyTextFieldDelegate()
   private let bag = DisposeBag()
-  var delegate: CurrencyRateTableViewCellDelegate?
+  weak var delegate: CurrencyRateTableViewCellDelegate?
   
   override func awakeFromNib() {
     super.awakeFromNib()
@@ -28,7 +28,6 @@ class CurrencyRateTableViewCell: UITableViewCell {
     valueField.delegate = textFieldDelegate
     valueField.rx.controlEvent(.editingDidBegin).bind { [weak self] in
       guard let `self` = self, let currencyId = self.currencyId else { return }
-//      self.baseCellDidChanged(with: currencyId, at: indexPath)
       let text = self.valueField.text ?? ""
       self.delegate?.becomeBase(currencyId, with: text)
       }.disposed(by: bag)
@@ -36,13 +35,12 @@ class CurrencyRateTableViewCell: UITableViewCell {
     valueField.rx.controlEvent(.editingChanged).bind { [weak self] in
       guard let `self` = self else { return }
       let text = self.valueField.text ?? ""
-//      self.viewModel.event.onNext(.baseValueChanged(newValue: text))
       self.delegate?.rateTextChanged(to: text)
     }.disposed(by: bag)
   }
   
   func startEditing() {
-    detailLabel.becomeFirstResponder()
+    valueField.becomeFirstResponder()
   }
   
   func update(with rate: DisplayRate) {

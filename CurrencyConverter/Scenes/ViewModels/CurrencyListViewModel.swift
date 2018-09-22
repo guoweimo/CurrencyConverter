@@ -2,18 +2,6 @@
 import Foundation
 import RxSwift
 
-enum State {
-  case initial(rates: [DisplayRate])
-  case refresh(rates: [DisplayRate])
-  case failToLoad(Error?)
-  case loading
-}
-
-enum Event {
-  case baseRateChanged(to: String, text: String)
-  case baseValueChanged(newValue: String)
-}
-
 class CurrencyRowViewModel {
   
   private let initialBase = Rate(currency: .defaultCurrency, value: 1)
@@ -25,8 +13,8 @@ class CurrencyRowViewModel {
   
   private let dispatcher: Dispatcher
   
-  private let state: BehaviorSubject<State>
-  let event = PublishSubject<Event>()
+  private let state: BehaviorSubject<RatesState>
+  let event = PublishSubject<RatesEvent>()
   
   init(dispatcher: Dispatcher) {
     
@@ -63,9 +51,9 @@ class CurrencyRowViewModel {
     }.disposed(by: bag)
   }
   
-  func requestRates(on interval: Double = 1) -> Observable<State> {
+  func requestRates(on interval: Double = 1) -> Observable<RatesState> {
     return Observable<Int>.interval(interval, scheduler: MainScheduler.asyncInstance)
-      .flatMap { [weak self] cnt -> Observable<State> in
+      .flatMap { [weak self] cnt -> Observable<RatesState> in
         guard let `self` = self else { return Observable.just(.loading) }
         let loadableRates = RatesWorker(base: self.baseRate.value.currency).doWork(in: self.dispatcher)
         return loadableRates.map { state in

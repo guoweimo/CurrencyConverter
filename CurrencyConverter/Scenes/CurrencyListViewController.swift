@@ -84,10 +84,8 @@ extension CurrencyListViewController {
   
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     tableView.deselectRow(at: indexPath, animated: true)
-    if let cell = tableView.cellForRow(at: indexPath) as? CurrencyRateTableViewCell,
-      let currencyId = cell.currencyId {
+    if let cell = tableView.cellForRow(at: indexPath) as? CurrencyRateTableViewCell {
       cell.startEditing()
-      baseCellDidChanged(with: currencyId, and: cell.valueField.text ?? "", at: indexPath)
     }
   }
 }
