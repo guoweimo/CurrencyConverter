@@ -9,12 +9,6 @@ enum Response {
       self = .error(error)
       return
     }
-    
-    guard let data = data else {
-      self = .error(Errors.noData)
-      return
-    }
-    
     self = .data(data)
   }
 }
