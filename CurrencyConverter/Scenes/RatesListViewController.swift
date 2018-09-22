@@ -2,7 +2,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-class RateListViewController: UITableViewController {
+class RatesListViewController: UITableViewController {
   
   private let cellId = String(describing: RateTableViewCell.self)
   private let viewModel: RatesViewModel
@@ -72,7 +72,7 @@ class RateListViewController: UITableViewController {
   }
 }
 
-extension RateListViewController {
+extension RatesListViewController {
   
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return displayRates.count
@@ -95,7 +95,7 @@ extension RateListViewController {
   }
 }
 
-extension RateListViewController: RateTableViewCellDelegate {
+extension RatesListViewController: RateTableViewCellDelegate {
   func becomeBase(_ currency: String, with text: String) {
     if let indexPath = viewModel.indexPath(for: currency) {
       baseCellDidChanged(with: currency, and: text, at: indexPath)

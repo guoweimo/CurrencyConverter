@@ -7,21 +7,18 @@ class RateTableViewCell: UITableViewCell {
   @IBOutlet weak var iconView: UIImageView!
   @IBOutlet weak var titleLabel: UILabel!
   @IBOutlet weak var detailLabel: UILabel!
-  @IBOutlet weak var valueField: TextField!
+  @IBOutlet weak var valueField: UITextField!
+  @IBOutlet weak var separatorView: UIView!
   
-  @IBOutlet weak var valueFieldWidthConstraint: NSLayoutConstraint!
   private(set) var currencyId: String?
   private let textFieldDelegate = CurrencyTextFieldDelegate()
   private let bag = DisposeBag()
-  weak var delegate: CurrencyRateTableViewCellDelegate?
+  
+  weak var delegate: RateTableViewCellDelegate?
   
   override func awakeFromNib() {
     super.awakeFromNib()
     prepare()
-  }
-  
-  override func draw(_ rect: CGRect) {
-    valueField.addBottomBorder(width: valueFieldWidthConstraint.constant)
   }
   
   private func prepare() {
@@ -30,7 +27,13 @@ class RateTableViewCell: UITableViewCell {
       guard let `self` = self, let currencyId = self.currencyId else { return }
       let text = self.valueField.text ?? ""
       self.delegate?.becomeBase(currencyId, with: text)
-      }.disposed(by: bag)
+      self.separatorView.backgroundColor = .blue
+    }.disposed(by: bag)
+    
+    valueField.rx.controlEvent(.editingDidEnd).bind {
+      [weak self] in
+      self?.separatorView.backgroundColor = .lightGray
+    }.disposed(by: bag)
     
     valueField.rx.controlEvent(.editingChanged).bind { [weak self] in
       guard let `self` = self else { return }

@@ -12,7 +12,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="63" id="KGk-i7-Jjw" customClass="RateTableViewCell">
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="63" id="KGk-i7-Jjw" customClass="RateTableViewCell" customModule="CurrencyConverter">
             <rect key="frame" x="0.0" y="0.0" width="320" height="63"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
@@ -37,7 +37,7 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="1" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Uau-Ya-x17" customClass="TextField" customModule="CurrencyConverter" customModuleProvider="target">
+                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="1" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Uau-Ya-x17">
                         <rect key="frame" x="272" y="21.5" width="40" height="20"/>
                         <constraints>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="40" id="qIC-yi-Cwd"/>
@@ -46,6 +46,13 @@
                         <fontDescription key="fontDescription" type="system" pointSize="16"/>
                         <textInputTraits key="textInputTraits" autocorrectionType="no" keyboardType="decimalPad"/>
                     </textField>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ygz-th-zM6">
+                        <rect key="frame" x="272" y="41.5" width="40" height="1"/>
+                        <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="1" id="AKm-vQ-io4"/>
+                        </constraints>
+                    </view>
                 </subviews>
                 <constraints>
                     <constraint firstAttribute="bottom" secondItem="aXX-16-0Ha" secondAttribute="bottom" id="679-P3-gNw"/>
@@ -54,8 +61,11 @@
                     <constraint firstItem="kT0-dg-d6u" firstAttribute="top" relation="greaterThanOrEqual" secondItem="B8K-Se-lZi" secondAttribute="bottom" constant="4" id="E7r-aF-7rd"/>
                     <constraint firstItem="B8K-Se-lZi" firstAttribute="leading" secondItem="aXX-16-0Ha" secondAttribute="trailing" constant="16" id="F5K-Bb-EBN"/>
                     <constraint firstItem="B8K-Se-lZi" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="16" id="IWk-ub-Xgg"/>
+                    <constraint firstItem="Ygz-th-zM6" firstAttribute="leading" secondItem="Uau-Ya-x17" secondAttribute="leading" id="J9j-3e-xuj"/>
                     <constraint firstItem="aXX-16-0Ha" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="Q6A-4x-vfO"/>
                     <constraint firstAttribute="trailing" secondItem="Uau-Ya-x17" secondAttribute="trailing" constant="8" id="SqX-D8-RIF"/>
+                    <constraint firstItem="Ygz-th-zM6" firstAttribute="top" secondItem="Uau-Ya-x17" secondAttribute="bottom" id="UWB-I7-Rxs"/>
+                    <constraint firstItem="Ygz-th-zM6" firstAttribute="trailing" secondItem="Uau-Ya-x17" secondAttribute="trailing" id="dpo-0h-CUn"/>
                     <constraint firstItem="Uau-Ya-x17" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="kT0-dg-d6u" secondAttribute="trailing" constant="12" id="eqW-1p-0De"/>
                     <constraint firstItem="aXX-16-0Ha" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="pP8-C9-UAj"/>
                     <constraint firstAttribute="bottom" secondItem="kT0-dg-d6u" secondAttribute="bottom" constant="16" id="yHx-mR-bKu"/>
@@ -63,13 +73,13 @@
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
-                <outlet property="detailLabel" destination="kT0-dg-d6u" id="HU1-RY-Awl"/>
-                <outlet property="iconView" destination="aXX-16-0Ha" id="KPe-z5-sGe"/>
-                <outlet property="titleLabel" destination="B8K-Se-lZi" id="f9B-0U-whl"/>
-                <outlet property="valueField" destination="Uau-Ya-x17" id="ixh-DB-2ha"/>
-                <outlet property="valueFieldWidthConstraint" destination="qIC-yi-Cwd" id="bsn-9B-DDn"/>
+                <outlet property="detailLabel" destination="kT0-dg-d6u" id="j10-5x-nyV"/>
+                <outlet property="iconView" destination="aXX-16-0Ha" id="B2X-FM-tlE"/>
+                <outlet property="separatorView" destination="Ygz-th-zM6" id="iSL-V9-ylQ"/>
+                <outlet property="titleLabel" destination="B8K-Se-lZi" id="6OJ-Qb-f3G"/>
+                <outlet property="valueField" destination="Uau-Ya-x17" id="xSn-VY-gTL"/>
             </connections>
-            <point key="canvasLocation" x="34" y="63.5"/>
+            <point key="canvasLocation" x="33.600000000000001" y="63.418290854572717"/>
         </tableViewCell>
     </objects>
 </document>
