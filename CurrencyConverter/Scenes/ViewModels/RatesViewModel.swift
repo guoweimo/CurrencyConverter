@@ -47,28 +47,30 @@ class RatesViewModel {
     }.disposed(by: bag)
   }
   
-  func requestRates(on interval: Double = 1) -> Observable<RatesState> {
-    return Observable<Int>.interval(interval, scheduler: MainScheduler.asyncInstance)
-      .flatMap { [weak self] cnt -> Observable<RatesState> in
-        guard let `self` = self else { return Observable.just(.loading) }
-        let loadableRates = RatesWorker(base: self.baseRate.value.currency).doWork(in: self.dispatcher)
-        return loadableRates.map { state in
-          switch state {
-          case .loaded(let rawRates):
-            let group = RatesGroup(with: rawRates)
-            let countChanged = self.currentRates.value.count != group.rates.count
-            let displayRates = self.makeDisplayRates(with: group.rates, countChanged: countChanged)
-            if countChanged {
-              return .initial(rates: displayRates)
-            } else {
-              return .refresh(rates: displayRates)
-            }
-          case .failed(let error):
-            return .failToLoad(error)
-          case .loading:
-            return .loading
-          }
+  func requestRatesRegularly(on interval: Double = 1) -> Observable<RatesState> {
+    return Observable<Int>.interval(interval, scheduler: MainScheduler.asyncInstance).flatMap { _ in
+        self.requestRates()
+    }
+  }
+  
+  func requestRates() -> Observable<RatesState> {
+    let loadableRates = RatesWorker(base: baseRate.value.currency).doWork(in: dispatcher)
+    return loadableRates.map { state in
+      switch state {
+      case .loaded(let rawRates):
+        let group = RatesGroup(with: rawRates)
+        let countChanged = self.currentRates.value.count != group.rates.count
+        let displayRates = self.makeDisplayRates(with: group.rates, countChanged: countChanged)
+        if countChanged {
+          return .initial(rates: displayRates)
+        } else {
+          return .refresh(rates: displayRates)
         }
+      case .failed(let error):
+        return .failToLoad(error)
+      case .loading:
+        return .loading
+      }
     }
   }
   

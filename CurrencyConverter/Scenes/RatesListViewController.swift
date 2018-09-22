@@ -29,7 +29,7 @@ class RatesListViewController: UITableViewController {
   }
   
   func updateViewOnRatesChanged() {
-    viewModel.requestRates().subscribeNext {
+    viewModel.requestRatesRegularly().subscribeNext {
       [weak self] state in
       guard let `self` = self else { return }
       DispatchQueue.main.async {

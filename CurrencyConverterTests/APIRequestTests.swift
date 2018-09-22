@@ -25,7 +25,7 @@ class APIRequestTests: XCTestCase {
   }
   
   func testRatesRequestShouldHaveCorrectMethod() {
-    XCTAssertEqual(ratesRequest?.method, .post)
+    XCTAssertEqual(ratesRequest?.method, .get)
   }
   
 }

@@ -15,12 +15,6 @@ struct RatesGroup {
     let baseRate = Rate(currency: rawRates.base, value: 1)
     rates = [baseRate] + rawRates.rates.map { Rate(currency: $0.currency, value: $0.value) }
   }
-  
-  func updateRates(with value: Float) {
-    rates.forEach {
-      $0.value *= value
-    }
-  }
 }
 
 class Rate {

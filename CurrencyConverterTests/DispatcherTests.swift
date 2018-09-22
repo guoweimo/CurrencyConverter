@@ -34,7 +34,7 @@ class DispatcherTests: XCTestCase {
     let urlRequest = try? dispatcher?.prepare(request, with: environment)
     
     XCTAssertEqual(urlRequest??.url?.absoluteString, "https://revolut.duckdns.org/latest?base=GBP")
-    XCTAssertEqual(urlRequest??.httpMethod, "POST")
+    XCTAssertEqual(urlRequest??.httpMethod, "GET")
   }
   
   func testInvalidURLShouldThrowError() {

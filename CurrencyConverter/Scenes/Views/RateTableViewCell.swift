@@ -30,8 +30,7 @@ class RateTableViewCell: UITableViewCell {
       self.separatorView.backgroundColor = .blue
     }.disposed(by: bag)
     
-    valueField.rx.controlEvent(.editingDidEnd).bind {
-      [weak self] in
+    valueField.rx.controlEvent(.editingDidEnd).bind { [weak self] in
       self?.separatorView.backgroundColor = .lightGray
     }.disposed(by: bag)
     
