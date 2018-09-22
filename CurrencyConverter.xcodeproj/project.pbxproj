@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		E4170BB421569CCB0086934C /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E49716B52152D5390058635D /* RxSwift.framework */; };
 		E4170BB62156A3630086934C /* RatesWokerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4170BB52156A3630086934C /* RatesWokerTests.swift */; };
+		E4170BB92156AC6F0086934C /* RatesViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4170BB82156AC6F0086934C /* RatesViewModelTests.swift */; };
 		E44B84C42155C1340067F46B /* RatesState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44B84C32155C1340067F46B /* RatesState.swift */; };
 		E44B84C62155C1510067F46B /* RatesEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44B84C52155C1510067F46B /* RatesEvent.swift */; };
 		E44B84CA2155C3730067F46B /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44B84C92155C3720067F46B /* LoadingView.swift */; };
@@ -28,7 +29,7 @@
 		E4971687214C61020058635D /* DispatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4971686214C61020058635D /* DispatcherTests.swift */; };
 		E497168C214C6F340058635D /* RawRates.swift in Sources */ = {isa = PBXBuildFile; fileRef = E497168B214C6F340058635D /* RawRates.swift */; };
 		E497168E214C73210058635D /* MockData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E497168D214C73210058635D /* MockData.swift */; };
-		E4971691214C73DB0058635D /* RatesViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4971690214C73DB0058635D /* RatesViewModelTests.swift */; };
+		E4971691214C73DB0058635D /* RatesViewModelTests+Requests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4971690214C73DB0058635D /* RatesViewModelTests+Requests.swift */; };
 		E4971692214C7BB30058635D /* sample_rates.json in Resources */ = {isa = PBXBuildFile; fileRef = E4971688214C6C070058635D /* sample_rates.json */; };
 		E497169A214D99770058635D /* Action.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4971699214D99770058635D /* Action.swift */; };
 		E49716A0214D9DB60058635D /* TextFieldDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E497169F214D9DB60058635D /* TextFieldDelegate.swift */; };
@@ -88,6 +89,7 @@
 
 /* Begin PBXFileReference section */
 		E4170BB52156A3630086934C /* RatesWokerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatesWokerTests.swift; sourceTree = "<group>"; };
+		E4170BB82156AC6F0086934C /* RatesViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RatesViewModelTests.swift; sourceTree = "<group>"; };
 		E44B84C32155C1340067F46B /* RatesState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatesState.swift; sourceTree = "<group>"; };
 		E44B84C52155C1510067F46B /* RatesEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatesEvent.swift; sourceTree = "<group>"; };
 		E44B84C92155C3720067F46B /* LoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
@@ -114,7 +116,7 @@
 		E4971688214C6C070058635D /* sample_rates.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = sample_rates.json; sourceTree = "<group>"; };
 		E497168B214C6F340058635D /* RawRates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RawRates.swift; sourceTree = "<group>"; };
 		E497168D214C73210058635D /* MockData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockData.swift; sourceTree = "<group>"; };
-		E4971690214C73DB0058635D /* RatesViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatesViewModelTests.swift; sourceTree = "<group>"; };
+		E4971690214C73DB0058635D /* RatesViewModelTests+Requests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RatesViewModelTests+Requests.swift"; sourceTree = "<group>"; };
 		E4971699214D99770058635D /* Action.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Action.swift; sourceTree = "<group>"; };
 		E497169F214D9DB60058635D /* TextFieldDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldDelegate.swift; sourceTree = "<group>"; };
 		E49716A6214DB17D0058635D /* RatesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatesViewModel.swift; sourceTree = "<group>"; };
@@ -164,6 +166,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E4170BB72156AC430086934C /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				E4971659214C55C10058635D /* APIRequestTests.swift */,
+				E4971686214C61020058635D /* DispatcherTests.swift */,
+				E4170BB52156A3630086934C /* RatesWokerTests.swift */,
+			);
+			path = Network;
+			sourceTree = "<group>";
+		};
 		E4971638214C55BD0058635D = {
 			isa = PBXGroup;
 			children = (
@@ -203,10 +215,9 @@
 			isa = PBXGroup;
 			children = (
 				E497168F214C73790058635D /* Mock Data */,
-				E4971659214C55C10058635D /* APIRequestTests.swift */,
-				E4971686214C61020058635D /* DispatcherTests.swift */,
-				E4170BB52156A3630086934C /* RatesWokerTests.swift */,
-				E4971690214C73DB0058635D /* RatesViewModelTests.swift */,
+				E4170BB72156AC430086934C /* Network */,
+				E4170BB82156AC6F0086934C /* RatesViewModelTests.swift */,
+				E4971690214C73DB0058635D /* RatesViewModelTests+Requests.swift */,
 				E497165B214C55C10058635D /* Info.plist */,
 			);
 			path = CurrencyConverterTests;
@@ -525,10 +536,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E4971691214C73DB0058635D /* RatesViewModelTests.swift in Sources */,
+				E4971691214C73DB0058635D /* RatesViewModelTests+Requests.swift in Sources */,
 				E4971687214C61020058635D /* DispatcherTests.swift in Sources */,
 				E497168E214C73210058635D /* MockData.swift in Sources */,
 				E4170BB62156A3630086934C /* RatesWokerTests.swift in Sources */,
+				E4170BB92156AC6F0086934C /* RatesViewModelTests.swift in Sources */,
 				E497165A214C55C10058635D /* APIRequestTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

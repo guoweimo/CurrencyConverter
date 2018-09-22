@@ -8,7 +8,8 @@ class RatesViewModelTests: XCTestCase {
   let request = APIRequest.rates(base: "EUR")
   var viewModel: RatesViewModel?
   let bag = DisposeBag()
-  
+  let originBase = Rate(currency: "EUR", value: 1)
+
   override func setUp() {
     super.setUp()
     
@@ -16,56 +17,48 @@ class RatesViewModelTests: XCTestCase {
     viewModel = RatesViewModel(dispatcher: dispatcher)
   }
   
-  func testFirstValidResponse() {
-    viewModel?.requestRates().subscribeNext { state in
-      switch state {
-      case .initial(let rates):
-        XCTAssertEqual(rates.count, 33)
-        self.assertDisplayRates(rates)
-      default:
-        XCTFail()
-      }
-    }.disposed(by: bag)
+  func testBaseRateChangeEvent() {
+    let currentRates = viewModel?.currentRates
+    let currentBase = viewModel?.baseRate
+    
+    viewModel?.requestRates().subscribe().disposed(by: bag)
+    
+    XCTAssertEqual(currentRates?.value[0], originBase)
+
+    viewModel?.event.onNext(.baseRateChanged(to: "CNY", text: "1.20"))
+    
+    let newBase = Rate(currency: "CNY", value: 1.2)
+    XCTAssertEqual(currentBase?.value, newBase)
+    XCTAssertEqual(currentRates?.value[0], newBase)
+    XCTAssertEqual(currentRates?.value[1], originBase)
   }
   
-  func testSecondCallShouldRefreshRates() {
+  func testBaseValueChangeEvent() {
+    let currentRates = viewModel?.currentRates
+    
     viewModel?.requestRates().subscribe().disposed(by: bag)
-    sleep(1)
-    viewModel?.requestRates().subscribeNext { state in
-      switch state {
-      case .refresh(let rates):
-        XCTAssertEqual(rates.count, 33)
-        self.assertDisplayRates(rates)
-      default:
-        XCTFail()
-      }
-    }.disposed(by: bag)
+    XCTAssertEqual(currentRates?.value[0], originBase)
+    
+    let oldValues = currentRates?.value.map { $0.value }
+
+    viewModel?.event.onNext(.baseValueChanged(newValue: "208.34"))
+    
+    XCTAssertEqual(currentRates?.value[0].value, 208.34)
+    
+    currentRates?.value.enumerated().forEach {
+      (index, rate) in
+      XCTAssertEqual(rate.value, oldValues![index] * 208.34)
+    }
   }
-
-  private func assertDisplayRates(_ rates: [DisplayRate]) {
+  
+  func testIndexPathOfCurrency() {
+    viewModel?.requestRates().subscribe().disposed(by: bag)
     
-    let rate0 = rates[0]
-    XCTAssertEqual(rate0.currencyCode, "EUR")
-    XCTAssertEqual(rate0.formattedValue, "1")
+    let indexPath = viewModel?.indexPath(for: "EUR")
+    XCTAssertEqual(indexPath, .zero)
     
-    let rate1 = rates[1]
-    XCTAssertEqual(rate1.currencyCode, "AUD")
-    XCTAssertEqual(rate1.formattedValue, "1.61")
-    
-    let rate2 = rates[2]
-    XCTAssertEqual(rate2.currencyCode, "BGN")
-    XCTAssertEqual(rate2.formattedValue, "1.95")
+    let indexPath2 = viewModel?.indexPath(for: "USD")
+    XCTAssertEqual(indexPath2, IndexPath(row: 31, section: 0))
 
-    let rate3 = rates[3]
-    XCTAssertEqual(rate3.currencyCode, "BRL")
-    XCTAssertEqual(rate3.formattedValue, "4.78")
-
-    let rate4 = rates[4]
-    XCTAssertEqual(rate4.currencyCode, "CAD")
-    XCTAssertEqual(rate4.formattedValue, "1.53")
-
-    let rate5 = rates[5]
-    XCTAssertEqual(rate5.currencyCode, "CHF")
-    XCTAssertEqual(rate5.formattedValue, "1.13")
   }
 }

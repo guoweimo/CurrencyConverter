@@ -5,12 +5,13 @@ import RxSwift
 class RatesViewModel {
   
   private let initialBase = Rate(currency: .defaultCurrency, value: 1)
-  private let baseRate: Variable<Rate>
-  private let currentRates = Variable<[Rate]>([])
   private let state: BehaviorSubject<RatesState>
+
   let event = PublishSubject<RatesEvent>()
+  let baseRate: Variable<Rate>
+  let currentRates = Variable<[Rate]>([])
+
   private let bag = DisposeBag()
-  
   private let dispatcher: Dispatcher
   
   init(dispatcher: Dispatcher) {
@@ -19,6 +20,12 @@ class RatesViewModel {
     state = BehaviorSubject(value: .initial(rates: []))
     baseRate = Variable(initialBase)
     
+    observeRatesEvents()
+    observeBaseRateChange()
+    observeCurrentRatesUpdate()
+  }
+  
+  private func observeRatesEvents() {
     event.map { event -> Rate in
       switch event {
       case .baseRateChanged(let new, let text):
@@ -29,22 +36,26 @@ class RatesViewModel {
         let newValue = CurrencyFormatter(currencyCode: currency).number(from: newTextValue)
         return Rate(currency: currency, value: newValue.floatValue)
       }
-    }.bind(to: baseRate)
-    .disposed(by: bag)
-    
+      }.bind(to: baseRate)
+      .disposed(by: bag)
+  }
+  
+  private func observeBaseRateChange() {
     baseRate.asObservable().map { base -> [Rate] in
       let basePrevIndex = self.currentRates.value.index(of: base)
       var newRates = self.currentRates.value
       guard let prevIndex = basePrevIndex, prevIndex != 0 else { return newRates }
       newRates.insert(newRates.remove(at: prevIndex), at: 0)
       return newRates
-    }.bind(to: currentRates)
-    .disposed(by: bag)
-      
+      }.bind(to: currentRates)
+      .disposed(by: bag)
+  }
+  
+  private func observeCurrentRatesUpdate() {
     currentRates.asObservable().subscribeNext { rates in
       rates.forEach { $0.value *= self.baseRate.value.value }
       self.state.onNext(.refresh(rates: rates.map(DisplayRate.init)))
-    }.disposed(by: bag)
+      }.disposed(by: bag)
   }
   
   func requestRatesRegularly(on interval: Double = 1) -> Observable<RatesState> {
