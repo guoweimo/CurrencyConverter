@@ -2,16 +2,16 @@ import UIKit
 import RxSwift
 import RxCocoa
 
-class CurrencyListViewController: UITableViewController {
+class RateListViewController: UITableViewController {
   
-  private let cellId = String(describing: CurrencyRateTableViewCell.self)
-  private let viewModel: CurrencyRowViewModel
+  private let cellId = String(describing: RateTableViewCell.self)
+  private let viewModel: RatesViewModel
   private let bag = DisposeBag()
   private var displayRates: [DisplayRate] = []
   
   private let loadingView = LoadingView()
   
-  init(viewModel: CurrencyRowViewModel) {
+  init(viewModel: RatesViewModel) {
     self.viewModel = viewModel
     super.init(nibName: nil, bundle: nil)
   }
@@ -58,7 +58,7 @@ class CurrencyListViewController: UITableViewController {
       fatalError(.unmatchedTableRowsCount)
     }
     rates.enumerated().forEach { index, rate in
-      if let cell = tableView.cellForRow(at: IndexPath(item: index, section: 0)) as? CurrencyRateTableViewCell {
+      if let cell = tableView.cellForRow(at: IndexPath(item: index, section: 0)) as? RateTableViewCell {
         cell.update(with: rate)
       }
     }
@@ -72,14 +72,14 @@ class CurrencyListViewController: UITableViewController {
   }
 }
 
-extension CurrencyListViewController {
+extension RateListViewController {
   
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return displayRates.count
   }
   
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    if let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as? CurrencyRateTableViewCell {
+    if let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as? RateTableViewCell {
       cell.update(with: displayRates[indexPath.row])
       cell.delegate = self
       return cell
@@ -89,13 +89,13 @@ extension CurrencyListViewController {
   
   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     tableView.deselectRow(at: indexPath, animated: true)
-    if let cell = tableView.cellForRow(at: indexPath) as? CurrencyRateTableViewCell {
+    if let cell = tableView.cellForRow(at: indexPath) as? RateTableViewCell {
       cell.startEditing()
     }
   }
 }
 
-extension CurrencyListViewController: CurrencyRateTableViewCellDelegate {
+extension RateListViewController: RateTableViewCellDelegate {
   func becomeBase(_ currency: String, with text: String) {
     if let indexPath = viewModel.indexPath(for: currency) {
       baseCellDidChanged(with: currency, and: text, at: indexPath)

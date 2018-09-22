@@ -2,7 +2,7 @@ import UIKit
 import FlagKit
 import RxSwift
 
-class CurrencyRateTableViewCell: UITableViewCell {
+class RateTableViewCell: UITableViewCell {
   
   @IBOutlet weak var iconView: UIImageView!
   @IBOutlet weak var titleLabel: UILabel!

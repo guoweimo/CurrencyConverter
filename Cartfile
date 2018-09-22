@@ -1,3 +1,2 @@
 github "ReactiveX/RxSwift" ~> 4.0
 github "madebybowtie/FlagKit"
-github "Instagram/IGListKit" ~> 3.0

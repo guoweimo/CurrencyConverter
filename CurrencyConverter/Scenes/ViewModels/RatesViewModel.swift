@@ -2,7 +2,7 @@
 import Foundation
 import RxSwift
 
-class CurrencyRowViewModel {
+class RatesViewModel {
   
   private let initialBase = Rate(currency: .defaultCurrency, value: 1)
   private let baseRate: Variable<Rate>

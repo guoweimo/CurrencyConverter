@@ -15,10 +15,12 @@ class RatesResponseTests: XCTestCase {
   func testRatesResponseParsing() {
     try? dispatcher?.fetch(request: request) { [weak self] (response) in
       switch response {
-      case .data(let rates):
+      case .data(let rates)?:
         self!.assertRates(rates)
-      case .error:
+      case .error?:
         XCTFail()
+      default:
+        break
       }
     }
   }
@@ -52,17 +54,18 @@ class RatesResponseTests: XCTestCase {
 
 
 struct MockDispatcher: Dispatcher {
+  
   typealias Data = RawRates
   init(environment: Environment) {
     
   }
   
-  func fetch(request: Request, completion: @escaping (Response<RawRates>) -> Void) throws {
+  func fetch(request: Request, completion: @escaping (Response?) -> Void) throws {
     guard let data = MockData.from(file: "sample_rates") else {
       return
     }
     let mockResponseState = HTTPURLResponse(url: URL(string: "www.google.co.uk")!, statusCode: 200, httpVersion: nil, headerFields: nil)
-    let response = Response<RawRates>(mockResponseState, data: data, error: nil)
+    let response = Response(mockResponseState, data: data, error: nil)
     completion(response)
   }
 }

@@ -4,7 +4,7 @@ import UIKit
 
 class LoadingView {
   lazy private var indicator = {
-    UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
+    UIActivityIndicatorView(style: .whiteLarge)
   }()
   
   func show(onView view: UIView) {
