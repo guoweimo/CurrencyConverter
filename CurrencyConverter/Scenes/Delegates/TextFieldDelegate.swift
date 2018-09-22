@@ -13,6 +13,10 @@ class CurrencyTextFieldDelegate: NSObject, UITextFieldDelegate {
   
   let separator = Locale.current.decimalSeparator ?? "."
   
+  func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+    return textField.resignFirstResponder()
+  }
+  
   func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
     if string.isEmpty {
       return true

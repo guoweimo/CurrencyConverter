@@ -10,6 +10,7 @@
 		E4170BB421569CCB0086934C /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E49716B52152D5390058635D /* RxSwift.framework */; };
 		E4170BB62156A3630086934C /* RatesWokerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4170BB52156A3630086934C /* RatesWokerTests.swift */; };
 		E4170BB92156AC6F0086934C /* RatesViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4170BB82156AC6F0086934C /* RatesViewModelTests.swift */; };
+		E4170BBB2156BE810086934C /* TestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4170BBA2156BE810086934C /* TestHelper.swift */; };
 		E44B84C42155C1340067F46B /* RatesState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44B84C32155C1340067F46B /* RatesState.swift */; };
 		E44B84C62155C1510067F46B /* RatesEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44B84C52155C1510067F46B /* RatesEvent.swift */; };
 		E44B84CA2155C3730067F46B /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E44B84C92155C3720067F46B /* LoadingView.swift */; };
@@ -43,7 +44,6 @@
 		E49716BD2152F1280058635D /* DisplayRate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49716BC2152F1280058635D /* DisplayRate.swift */; };
 		E49716C12152F3D60058635D /* FlagKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E49716B32152D3F40058635D /* FlagKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E49716C5215308710058635D /* RxCocoa.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E49716C3215308420058635D /* RxCocoa.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		E49716CD21540AE40058635D /* TextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49716CC21540AE40058635D /* TextField.swift */; };
 		E49716CF21540D0B0058635D /* RxSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = E49716B52152D5390058635D /* RxSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		E49716D1215415FB0058635D /* IndexPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49716D0215415FB0058635D /* IndexPath.swift */; };
 		E49716D321541ECE0058635D /* AlertController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E49716D221541ECE0058635D /* AlertController.swift */; };
@@ -90,6 +90,7 @@
 /* Begin PBXFileReference section */
 		E4170BB52156A3630086934C /* RatesWokerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatesWokerTests.swift; sourceTree = "<group>"; };
 		E4170BB82156AC6F0086934C /* RatesViewModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RatesViewModelTests.swift; sourceTree = "<group>"; };
+		E4170BBA2156BE810086934C /* TestHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestHelper.swift; sourceTree = "<group>"; };
 		E44B84C32155C1340067F46B /* RatesState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatesState.swift; sourceTree = "<group>"; };
 		E44B84C52155C1510067F46B /* RatesEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatesEvent.swift; sourceTree = "<group>"; };
 		E44B84C92155C3720067F46B /* LoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
@@ -130,7 +131,6 @@
 		E49716BA2152EF840058635D /* CurrencyFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyFormatter.swift; sourceTree = "<group>"; };
 		E49716BC2152F1280058635D /* DisplayRate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayRate.swift; sourceTree = "<group>"; };
 		E49716C3215308420058635D /* RxCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxCocoa.framework; path = Carthage/Build/iOS/RxCocoa.framework; sourceTree = SOURCE_ROOT; };
-		E49716CC21540AE40058635D /* TextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextField.swift; sourceTree = "<group>"; };
 		E49716D0215415FB0058635D /* IndexPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexPath.swift; sourceTree = "<group>"; };
 		E49716D221541ECE0058635D /* AlertController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertController.swift; sourceTree = "<group>"; };
 		E49716D4215420080058635D /* String+Copies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Copies.swift"; sourceTree = "<group>"; };
@@ -228,6 +228,7 @@
 			children = (
 				E4971664214C55C10058635D /* CurrencyConverterUITests.swift */,
 				E4971666214C55C10058635D /* Info.plist */,
+				E4170BBA2156BE810086934C /* TestHelper.swift */,
 			);
 			path = CurrencyConverterUITests;
 			sourceTree = "<group>";
@@ -320,7 +321,6 @@
 			children = (
 				E49716AA214DC9DD0058635D /* RateTableViewCell.swift */,
 				E49716AB214DC9DD0058635D /* RateTableViewCell.xib */,
-				E49716CC21540AE40058635D /* TextField.swift */,
 				E44B84C92155C3720067F46B /* LoadingView.swift */,
 			);
 			path = Views;
@@ -503,7 +503,6 @@
 				E49716A9214DB2240058635D /* Rates.swift in Sources */,
 				E49716D5215420080058635D /* String+Copies.swift in Sources */,
 				E497169A214D99770058635D /* Action.swift in Sources */,
-				E49716CD21540AE40058635D /* TextField.swift in Sources */,
 				E4D9969C215551250039DF9C /* Worker.swift in Sources */,
 				E497168C214C6F340058635D /* RawRates.swift in Sources */,
 				E4D9969E215552710039DF9C /* RatesWorker.swift in Sources */,
@@ -550,6 +549,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E4971665214C55C10058635D /* CurrencyConverterUITests.swift in Sources */,
+				E4170BBB2156BE810086934C /* TestHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

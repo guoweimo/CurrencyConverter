@@ -39,6 +39,7 @@
                     </label>
                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="1" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Uau-Ya-x17">
                         <rect key="frame" x="272" y="21.5" width="40" height="20"/>
+                        <accessibility key="accessibilityConfiguration" label="rateField"/>
                         <constraints>
                             <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="40" id="qIC-yi-Cwd"/>
                         </constraints>

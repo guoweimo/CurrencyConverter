@@ -53,5 +53,6 @@ class RateTableViewCell: UITableViewCell {
     if !valueField.isFirstResponder {
       valueField.text = rate.formattedValue
     }
+    accessibilityLabel = rate.currencyCode
   }
 }

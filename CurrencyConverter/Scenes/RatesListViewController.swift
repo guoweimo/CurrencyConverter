@@ -22,6 +22,7 @@ class RatesListViewController: UITableViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    
     tableView.separatorStyle = .none
     tableView.keyboardDismissMode = .interactive
     tableView.register(UINib(nibName: cellId, bundle: nil), forCellReuseIdentifier: cellId)
@@ -46,7 +47,7 @@ class RatesListViewController: UITableViewController {
                                     on: self)
         case .loading:
           if self.displayRates.isEmpty {
-            self.loadingView.show(onView: self.tableView)
+            self.loadingView.show(onView: self.view)
           }
         }
       }
@@ -72,6 +73,7 @@ class RatesListViewController: UITableViewController {
   }
 }
 
+//MARK: Table view delegate and data source
 extension RatesListViewController {
   
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -95,6 +97,7 @@ extension RatesListViewController {
   }
 }
 
+//MARK: table cell delegates
 extension RatesListViewController: RateTableViewCellDelegate {
   func becomeBase(_ currency: String, with text: String) {
     if let indexPath = viewModel.indexPath(for: currency) {

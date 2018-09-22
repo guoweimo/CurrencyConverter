@@ -3,8 +3,10 @@
 import UIKit
 
 class LoadingView {
-  lazy private var indicator = {
-    UIActivityIndicatorView(style: .whiteLarge)
+  
+  lazy private var indicator = { () -> UIActivityIndicatorView in
+    let loadingView = UIActivityIndicatorView(style: .whiteLarge)
+    return loadingView
   }()
   
   func show(onView view: UIView) {
@@ -12,7 +14,6 @@ class LoadingView {
     indicator.hidesWhenStopped = true
     if(!view.subviews.contains(indicator)) {
       indicator.center = view.center
-      indicator.autoresizingMask = [.flexibleRightMargin, .flexibleLeftMargin, .flexibleBottomMargin,.flexibleTopMargin]
       view.addSubview(indicator)
     }
     indicator.startAnimating()
