@@ -26,7 +26,8 @@ class RatesViewModel {
   }
   
   private func observeRatesEvents() {
-    event.map { event -> Rate in
+    event.map { [weak self] event -> Rate in
+      guard let `self` = self else { fatalError(.viewModelNilInstance) }
       switch event {
       case .baseRateChanged(let new, let text):
         let newValue = CurrencyFormatter(currencyCode: new).number(from: text)
@@ -36,23 +37,25 @@ class RatesViewModel {
         let newValue = CurrencyFormatter(currencyCode: currency).number(from: newTextValue)
         return Rate(currency: currency, value: newValue.floatValue)
       }
-      }.bind(to: baseRate)
-      .disposed(by: bag)
+    }.bind(to: baseRate)
+    .disposed(by: bag)
   }
   
   private func observeBaseRateChange() {
-    baseRate.asObservable().map { base -> [Rate] in
+    baseRate.asObservable().map { [weak self] base -> [Rate] in
+      guard let `self` = self else { return [] }
       let basePrevIndex = self.currentRates.value.index(of: base)
       var newRates = self.currentRates.value
       guard let prevIndex = basePrevIndex, prevIndex != 0 else { return newRates }
       newRates.insert(newRates.remove(at: prevIndex), at: 0)
       return newRates
-      }.bind(to: currentRates)
+    }.bind(to: currentRates)
       .disposed(by: bag)
   }
   
   private func observeCurrentRatesUpdate() {
-    currentRates.asObservable().subscribeNext { rates in
+    currentRates.asObservable().subscribeNext { [weak self] rates in
+      guard let `self` = self else { return }
       rates.forEach { $0.value *= self.baseRate.value.value }
       self.state.onNext(.refresh(rates: rates.map(DisplayRate.init)))
       }.disposed(by: bag)
@@ -89,11 +92,12 @@ class RatesViewModel {
   private func makeDisplayRates(with newRates: [Rate], countChanged: Bool) -> [DisplayRate] {
     if countChanged {
       currentRates.value = newRates
-    } 
+    }
+    let baseValue = baseRate.value.value
     return currentRates.value.map { rate -> Rate in
       let target = newRates.first { $0 == rate }
       if let target = target {
-        rate.value = target.value * baseRate.value.value
+        rate.value = target.value * baseValue
       }
       return rate
     }.map(DisplayRate.init)
