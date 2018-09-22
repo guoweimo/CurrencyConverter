@@ -1,5 +1,12 @@
 # CurrencyConverter
 
+# How to run
+- clone the project
+- run `carthage bootstrap` to pull down dependencies (install carthage if you don't have one)
+- run `CurrencyConverter` target for main app.
+- cmd + 'u' to run unit tests and UI tests. (currently test coverage 94.2%, mainly because AlertController is not UI tested.)
+
+
 # Requirement
 You should implement one screen with a list of currencies
 
