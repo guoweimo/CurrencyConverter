@@ -5,16 +5,13 @@ import RxSwift
 class CurrencyRowViewModel {
   
   private let initialBase = Rate(currency: .defaultCurrency, value: 1)
-  
   private let baseRate: Variable<Rate>
-  
   private let currentRates = Variable<[Rate]>([])
+  private let state: BehaviorSubject<RatesState>
+  let event = PublishSubject<RatesEvent>()
   private let bag = DisposeBag()
   
   private let dispatcher: Dispatcher
-  
-  private let state: BehaviorSubject<RatesState>
-  let event = PublishSubject<RatesEvent>()
   
   init(dispatcher: Dispatcher) {
     
@@ -35,8 +32,7 @@ class CurrencyRowViewModel {
     }.bind(to: baseRate)
     .disposed(by: bag)
     
-    baseRate.asObservable().map {
-      base -> [Rate] in
+    baseRate.asObservable().map { base -> [Rate] in
       let basePrevIndex = self.currentRates.value.index(of: base)
       var newRates = self.currentRates.value
       guard let prevIndex = basePrevIndex, prevIndex != 0 else { return newRates }
@@ -91,10 +87,7 @@ class CurrencyRowViewModel {
   }
   
   func indexPath(for currencyId: String) -> IndexPath? {
-    let index = currentRates.value.index {
-      $0.currency == currencyId
-    }
+    let index = currentRates.value.index { $0.currency == currencyId }
     return index.map { IndexPath(row: $0, section: 0) }
   }
-  
 }

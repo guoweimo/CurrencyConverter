@@ -9,6 +9,8 @@ class CurrencyListViewController: UITableViewController {
   private let bag = DisposeBag()
   private var displayRates: [DisplayRate] = []
   
+  private let loadingView = LoadingView()
+  
   init(viewModel: CurrencyRowViewModel) {
     self.viewModel = viewModel
     super.init(nibName: nil, bundle: nil)
@@ -31,6 +33,7 @@ class CurrencyListViewController: UITableViewController {
       [weak self] state in
       guard let `self` = self else { return }
       DispatchQueue.main.async {
+        self.loadingView.hide()
         switch state {
         case .initial(let rates):
           self.displayRates = rates
@@ -42,7 +45,9 @@ class CurrencyListViewController: UITableViewController {
           AlertController.showError(with: error?.localizedDescription ?? .standardRatesError,
                                     on: self)
         case .loading:
-          break
+          if self.displayRates.isEmpty {
+            self.loadingView.show(onView: self.tableView)
+          }
         }
       }
     }.disposed(by: bag)
